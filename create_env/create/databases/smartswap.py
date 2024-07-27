@@ -4,7 +4,6 @@ def create_db_smartswap(cursor):
     logger.info("Setting up the smartswap database.")
     cursor.execute("USE smartswap;")
     
-    # Create tables if they do not exist
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS wallets (
         name VARCHAR(50),
