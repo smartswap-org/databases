@@ -1,64 +1,53 @@
 from loguru import logger
 
 def create_db_smartswap_positions(cursor):
-    logger.info("Setting up smartswap_positions database.")
+    logger.info("Setting up the smartswap_positions database.")
     cursor.execute("USE smartswap_positions;")
-    
-    # Table for storing market orders
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS market_orders (
-        order_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-        symbol VARCHAR(20),
-        order_type VARCHAR(20),
-        side VARCHAR(10),
-        quantity DECIMAL(18, 8),
-        price DECIMAL(18, 8),
-        status VARCHAR(20),
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (symbol) REFERENCES market_data(symbol)
-    );
-    """)
-    
-    # Table for storing current positions
+
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS positions (
         position_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-        symbol VARCHAR(20),
-        entry_price DECIMAL(18, 8),
-        quantity DECIMAL(18, 8),
-        position_type VARCHAR(20),
-        status VARCHAR(20),
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (symbol) REFERENCES market_data(symbol)
+        wallet_name VARCHAR(100),
+        position_type ENUM('CEX', 'DEX')
     );
     """)
     
-    # Table for storing order history
+    # Table for storing market orders for centralized exchanges (CEX)
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS order_history (
-        history_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-        order_id BIGINT,
-        symbol VARCHAR(20),
-        order_type VARCHAR(20),
-        side VARCHAR(10),
-        quantity DECIMAL(18, 8),
-        price DECIMAL(18, 8),
-        status VARCHAR(20),
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (order_id) REFERENCES market_orders(order_id)
+    CREATE TABLE IF NOT EXISTS cex_market (
+        position_id BIGINT,
+        buy_order_id VARCHAR(50),
+        buy_price DECIMAL(18, 8),
+        buy_date TIMESTAMP,
+        buy_quantity DECIMAL(18, 8),
+        buy_fees DECIMAL(18, 8),
+        sell_order_id VARCHAR(50),
+        sell_price DECIMAL(18, 8),
+        sell_date TIMESTAMP,
+        sell_quantity DECIMAL(18, 8),
+        sell_fees DECIMAL(18, 8),
+        exchange VARCHAR(20),
+        FOREIGN KEY (position_id) REFERENCES positions(position_id)
     );
     """)
     
-    # Table for storing market data
+    # Table for storing market orders for decentralized exchanges (DEX)
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS market_data (
-        symbol VARCHAR(20) PRIMARY KEY,
-        last_price DECIMAL(18, 8),
-        bid_price DECIMAL(18, 8),
-        ask_price DECIMAL(18, 8),
-        volume DECIMAL(18, 8),
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    CREATE TABLE IF NOT EXISTS dex_routers (
+        position_id BIGINT,
+        buy_hash VARCHAR(66),
+        buy_price DECIMAL(18, 8),
+        buy_date TIMESTAMP,
+        buy_quantity DECIMAL(18, 8),
+        buy_fees DECIMAL(18, 8),
+        sell_hash VARCHAR(66),
+        sell_price DECIMAL(18, 8),
+        sell_date TIMESTAMP,
+        sell_quantity DECIMAL(18, 8),
+        sell_fees DECIMAL(18, 8),
+        router VARCHAR(50),
+        FOREIGN KEY (position_id) REFERENCES positions(position_id)
     );
     """)
     
-    logger.info("Positions database setup completed.")
+    logger.info("Smartswap_positions database setup completed.")
