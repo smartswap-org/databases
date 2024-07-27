@@ -2,8 +2,8 @@
 # It specifically shows how to create and manage a CEX (Centralized Exchange) market position using functions of mng.
 
 import pymysql
-from manage_positions.positions_mng import create_position
-from manage_positions.cex_market_mng import cex_market_buy, cex_market_sell
+from positions.positions_mng import create_position
+from positions.cex_market_mng import cex_market_buy, cex_market_sell
 
 HOST = 'localhost'
 USER = 'root'
