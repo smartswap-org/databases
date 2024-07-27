@@ -6,6 +6,12 @@
 
 This section provides all the tools needed to create and manage databases for the Smartswap project.
 
+> [!IMPORTANT]  
+> You can add this repository as a submodule in any part of the Smartswap project to easily access and use the mng/ functions.
+
+> [!CAUTION]  
+> When using the create_env script, please pay attention to the prompts it provides. If the databases already exist on your machine, the script will ask if you want to proceed with an "over-setup-env." Choosing this option will delete all existing databases and recreate new, empty ones.
+
 ## Deployment
 
 ### Setting Up the Environment
