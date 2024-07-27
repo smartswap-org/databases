@@ -16,12 +16,12 @@ def create_db_smartswap_positions(cursor):
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS cex_market (
         position_id BIGINT,
-        buy_order_id VARCHAR(50),
+        buy_order_id BIGINT,
         buy_price DECIMAL(18, 8),
         buy_date TIMESTAMP,
         buy_quantity DECIMAL(18, 8),
         buy_fees DECIMAL(18, 8),
-        sell_order_id VARCHAR(50),
+        sell_order_id BIGINT,
         sell_price DECIMAL(18, 8),
         sell_date TIMESTAMP,
         sell_quantity DECIMAL(18, 8),
