@@ -14,9 +14,10 @@ def create_db_smartswap(cursor):
     """)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS clients (
-        user CHAR(100) PRIMARY KEY,
+        user CHAR(100),
         discord_user_id VARCHAR(125),
-        password VARCHAR(32)
+        password BLOB,
+        PRIMARY KEY (user)
     );
     """)
     cursor.execute("""

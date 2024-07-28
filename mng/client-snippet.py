@@ -1,8 +1,5 @@
-# This script demonstrates how to use client management functions to interact with the `smartswap` database.
-# It specifically shows how to create, update, and delete a client using the functions defined above.
-
 import pymysql
-from clients.client_mng import create_client, update_client_password, delete_client
+from clients.client_mng import create_client, update_client_password, delete_client, get_client_password
 
 HOST = 'localhost'
 USER = 'root'
@@ -19,7 +16,14 @@ def main():
     )
     try:
         with connection.cursor() as cursor:
-            create_client(cursor, 'client1', '', 'securepassword')
+            # create client
+            create_client(cursor, 'client1', 'discord_id_1', 'securepassword')
+            
+            # to retrieve and decrypt keys (example)
+            retrieved_password = get_client_password(cursor, 'client1')
+            print(f"Retrieved password for client1: {retrieved_password}")
+            
+            # delete client
             delete_client(cursor, 'client1')
             
         connection.commit()
