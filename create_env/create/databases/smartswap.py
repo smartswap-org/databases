@@ -8,8 +8,8 @@ def create_db_smartswap(cursor):
     CREATE TABLE IF NOT EXISTS wallets (
         name VARCHAR(50),
         address VARCHAR(255),
-        private_key VARCHAR(255),
-        PRIMARY KEY (name(50)) -- Using a prefix length for the index
+        `keys` CHAR(255),
+        PRIMARY KEY (name)
     );
     """)
     cursor.execute("""
