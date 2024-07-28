@@ -1,4 +1,4 @@
-from wallets.crypt_keys import encrypt_keys
+from wallets.crypt_keys import encrypt_keys, decrypt_keys
 from loguru import logger
 
 def create_wallet(cursor, name, address, keys):
@@ -40,3 +40,21 @@ def delete_wallet(cursor, name):
     WHERE `name` = %s;
     """, (name,))
     logger.info(f"Wallet '{name}' deleted.")
+
+def get_wallet_keys(cursor, name):
+    """Retrieve and decrypt the keys for a given wallet."""
+    logger.info(f"Retrieving keys for wallet '{name}'.")
+    cursor.execute("""
+    SELECT `keys`
+    FROM wallets
+    WHERE `name` = %s;
+    """, (name,))
+    result = cursor.fetchone()
+    if result:
+        encrypted_keys = result['keys']
+        decrypted_keys = decrypt_keys(encrypted_keys)
+        logger.info(f"Keys retrieved for wallet '{name}'.")
+        return decrypted_keys
+    else:
+        logger.warning(f"No wallet found with name '{name}'.")
+        return None
