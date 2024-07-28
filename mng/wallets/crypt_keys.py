@@ -3,10 +3,10 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.serialization import load_pem_public_key, load_pem_private_key
 import json
 
-with open("databases/encrypt/keys/public_key.pem", "rb") as public_key_file:
+with open("databases/encrypt/keys/wallets_keys/public_key.pem", "rb") as public_key_file:
     public_key = load_pem_public_key(public_key_file.read())
 
-with open("databases/encrypt/keys/private_key.pem", "rb") as private_key_file:
+with open("databases/encrypt/keys/wallets_keys/private_key.pem", "rb") as private_key_file:
     private_key = load_pem_private_key(private_key_file.read(), password=None)
 
 def encrypt_keys(keys):

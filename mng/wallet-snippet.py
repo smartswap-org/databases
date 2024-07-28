@@ -1,6 +1,6 @@
 import pymysql
 from wallets.wallet_mng import create_wallet, delete_wallet
-from encrypt.crypt import decrypt_keys
+from wallets.crypt_keys import decrypt_keys
 
 HOST = 'localhost'
 USER = 'root'

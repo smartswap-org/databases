@@ -1,7 +1,5 @@
-from encrypt.crypt import encrypt_keys
-import json
+from wallets.crypt_keys import encrypt_keys
 from loguru import logger
-
 
 def create_wallet(cursor, name, address, keys):
     """Create a new wallet in the wallets table."""
