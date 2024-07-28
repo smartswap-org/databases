@@ -1,8 +1,6 @@
-# This script demonstrates how to use wallet management functions to interact with the `smartswap` database.
-# It specifically shows how to create, update, and delete a wallet using the functions defined above.
-
 import pymysql
-from wallets.wallet_mng import create_wallet, update_wallet_address, update_wallet_keys, delete_wallet
+from wallets.wallet_mng import create_wallet, delete_wallet
+from encrypt.crypt import decrypt_keys
 
 HOST = 'localhost'
 USER = 'root'
@@ -22,6 +20,12 @@ def main():
             # create wallets
             create_wallet(cursor, 'wallet1', '0x1234567890abcdef', {'private_key': '123'})
             create_wallet(cursor, 'wallet2', '0xfedcba0987654321', {'api_key': '456', 'api_secret': '789'})
+            
+            # to retrieve and decrypt keys (example)
+            cursor.execute("SELECT `keys` FROM wallets WHERE `name` = %s", ('wallet1',))
+            encrypted_keys = cursor.fetchone()['keys']
+            decrypted_keys = decrypt_keys(encrypted_keys)
+            print(decrypted_keys)  # should print: {'private_key': '123'}
             
             # delete wallets
             delete_wallet(cursor, 'wallet1')

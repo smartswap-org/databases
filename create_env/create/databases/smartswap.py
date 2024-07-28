@@ -8,7 +8,7 @@ def create_db_smartswap(cursor):
     CREATE TABLE IF NOT EXISTS wallets (
         name VARCHAR(50),
         address VARCHAR(255),
-        `keys` CHAR(255),
+        `keys` BLOB,
         PRIMARY KEY (name)
     );
     """)

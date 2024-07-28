@@ -1,14 +1,16 @@
+from encrypt.crypt import encrypt_keys
 import json
 from loguru import logger
+
 
 def create_wallet(cursor, name, address, keys):
     """Create a new wallet in the wallets table."""
     logger.info(f"Creating new wallet with name '{name}'.")
-    keys_json = json.dumps(keys)  # convert the keys dictionary to a JSON string
+    encrypted_keys = encrypt_keys(keys)  # encrypt the keys dictionary
     cursor.execute("""
     INSERT INTO wallets (`name`, `address`, `keys`)
     VALUES (%s, %s, %s);
-    """, (name, address, keys_json))
+    """, (name, address, encrypted_keys))
     logger.info(f"Wallet created with name '{name}'.")
 
 def update_wallet_address(cursor, name, new_address):
@@ -24,12 +26,12 @@ def update_wallet_address(cursor, name, new_address):
 def update_wallet_keys(cursor, name, new_keys):
     """Update the keys for a given wallet."""
     logger.info(f"Updating keys for wallet '{name}'.")
-    keys_json = json.dumps(new_keys)  # convert the keys dictionary to a JSON string
+    encrypted_keys = encrypt_keys(new_keys)  # encrypt the new keys dictionary
     cursor.execute("""
     UPDATE wallets
     SET `keys` = %s
     WHERE `name` = %s;
-    """, (keys_json, name))
+    """, (encrypted_keys, name))
     logger.info(f"Keys updated for wallet '{name}'.")
 
 def delete_wallet(cursor, name):
