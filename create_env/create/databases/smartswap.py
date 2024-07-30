@@ -8,15 +8,16 @@ def create_db_smartswap(cursor):
     CREATE TABLE IF NOT EXISTS wallets (
         name VARCHAR(50),
         address VARCHAR(255),
-        private_key VARCHAR(255),
-        PRIMARY KEY (name(50)) -- Using a prefix length for the index
+        `keys` BLOB,
+        PRIMARY KEY (name)
     );
     """)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS clients (
-        user CHAR(100) PRIMARY KEY,
+        user CHAR(100),
         discord_user_id VARCHAR(125),
-        password VARCHAR(32)
+        password BLOB,
+        PRIMARY KEY (user)
     );
     """)
     cursor.execute("""

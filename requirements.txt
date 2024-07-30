@@ -1,3 +1,4 @@
 pymsql
 mariadb
 coloredlogs
+cryptography

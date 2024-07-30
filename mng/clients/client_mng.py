@@ -1,0 +1,50 @@
+from loguru import logger
+from clients.crypt_password import encrypt_password, decrypt_password
+
+def create_client(cursor, user, discord_user_id, password):
+    """Create a new client in the clients table."""
+    logger.info(f"Creating new client with user '{user}'.")
+    encrypted_password = encrypt_password(password)
+    cursor.execute("""
+    INSERT INTO clients (user, discord_user_id, password)
+    VALUES (%s, %s, %s);
+    """, (user, discord_user_id, encrypted_password))
+    logger.info(f"Client created with user '{user}'.")
+
+def update_client_password(cursor, user, new_password):
+    """Update the password for a given client."""
+    logger.info(f"Updating password for client '{user}'.")
+    encrypted_password = encrypt_password(new_password)
+    cursor.execute("""
+    UPDATE clients
+    SET password = %s
+    WHERE user = %s;
+    """, (encrypted_password, user))
+    logger.info(f"Password updated for client '{user}'.")
+
+def delete_client(cursor, user):
+    """Delete a client from the clients table."""
+    logger.info(f"Deleting client with user '{user}'.")
+    cursor.execute("""
+    DELETE FROM clients
+    WHERE user = %s;
+    """, (user,))
+    logger.info(f"Client '{user}' deleted.")
+
+def get_client_password(cursor, user):
+    """Retrieve and decrypt the password for a given client."""
+    logger.info(f"Retrieving password for client '{user}'.")
+    cursor.execute("""
+    SELECT password
+    FROM clients
+    WHERE user = %s;
+    """, (user,))
+    result = cursor.fetchone()
+    if result:
+        encrypted_password = result['password']
+        decrypted_password = decrypt_password(encrypted_password)
+        logger.info(f"Password retrieved for client '{user}'.")
+        return decrypted_password
+    else:
+        logger.warning(f"No client found with user '{user}'.")
+        return None
