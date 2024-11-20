@@ -2,3 +2,4 @@ pymsql
 mariadb
 coloredlogs
 cryptography
+loguru
