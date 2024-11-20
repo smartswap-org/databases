@@ -51,7 +51,7 @@ def create_db_smartswap(cursor):
         buy_signals TEXT,
         sell_signals TEXT,
         bot_name VARCHAR(20),
-        fund_slot INTEGER
+        fund_slot INTEGER DEFAULT 0
     )
     ''')
     cursor.execute('''
