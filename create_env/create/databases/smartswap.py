@@ -31,7 +31,7 @@ def create_db_smartswap(cursor):
     """)
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS cex_market (
-        position_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        position_id INTEGER PRIMARY KEY AUTO_INCREMENT,
         buy_order_id BIGINT,
         buy_price DECIMAL(18, 8),
         buy_date TIMESTAMP,
@@ -50,7 +50,8 @@ def create_db_smartswap(cursor):
         pair VARCHAR(20),
         buy_signals TEXT,
         sell_signals TEXT,
-        bot_name VARCHAR(20)
+        bot_name VARCHAR(20),
+        fund_slot INTEGER
     )
     ''')
     cursor.execute('''
@@ -58,6 +59,15 @@ def create_db_smartswap(cursor):
         position_id INTEGER PRIMARY KEY,
         buy_log BOOLEAN DEFAULT FALSE,
         sell_log BOOLEAN DEFAULT FALSE
+    )
+    ''')
+    
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS funds (
+        id INTEGER PRIMARY KEY AUTO_INCREMENT,
+        bot_name TEXT,
+        last_position_id INTEGER,
+        funds TEXT
     )
     ''')
 
