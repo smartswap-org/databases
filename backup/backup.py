@@ -4,7 +4,7 @@ import datetime
 db_user = 'root'
 db_password = ''
 db_host = 'localhost'
-db_names = ['smartswap', 'smartswap_positions']
+db_names = ['smartswap']
 backup_dir = '/backup/saves'
 
 date_str = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
