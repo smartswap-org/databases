@@ -1,11 +1,10 @@
 from loguru import logger
-
-def cex_market_buy(cursor, buy_order_id, buy_price, buy_date, buy_quantity, buy_fees, buy_value_usdt, exchange, pair, buy_signals, bot_name):
+def cex_market_buy(cursor, buy_order_id, buy_price, buy_date, buy_quantity, buy_fees, buy_value_usdt, exchange, pair, buy_signals, bot_name, fund_slot):
     """Insert into the CEX market table with buy details and return the auto-incremented position_id."""
     logger.info(f"Inserting CEX market buy details.")
     cursor.execute("""
-    INSERT INTO cex_market (buy_order_id, buy_price, buy_date, buy_quantity, buy_fees, buy_value_usdt, exchange, pair, buy_signals, bot_name)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    INSERT INTO cex_market (buy_order_id, buy_price, buy_date, buy_quantity, buy_fees, buy_value_usdt, exchange, pair, buy_signals, bot_name, fund_slot)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     ON DUPLICATE KEY UPDATE
         buy_order_id = VALUES(buy_order_id),
         buy_price = VALUES(buy_price),
@@ -16,8 +15,9 @@ def cex_market_buy(cursor, buy_order_id, buy_price, buy_date, buy_quantity, buy_
         exchange = VALUES(exchange),
         pair = VALUES(pair),
         buy_signals = VALUES(buy_signals),
-        bot_name = VALUES(bot_name);
-    """, (buy_order_id, buy_price, buy_date, buy_quantity, buy_fees, buy_value_usdt, exchange, pair, buy_signals, bot_name))
+        bot_name = VALUES(bot_name),
+        fund_slot = VALUES(fund_slot);
+    """, (buy_order_id, buy_price, buy_date, buy_quantity, buy_fees, buy_value_usdt, exchange, pair, buy_signals, bot_name, fund_slot))
     cursor.connection.commit()
     position_id = cursor.lastrowid
     logger.info(f"CEX market buy details inserted with position_id {position_id}.")
