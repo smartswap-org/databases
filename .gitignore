@@ -1,2 +1,5 @@
 encrypt/keys/
 *.pyc
+backup/saves/*
+backup/logs/*
+!backup/saves/README.md
