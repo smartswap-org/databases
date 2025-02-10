@@ -1,8 +1,16 @@
 import os
 import datetime
 import subprocess
+import argparse
 from pathlib import Path
 from loguru import logger
+
+parser = argparse.ArgumentParser(description='Backup MySQL databases.')
+parser.add_argument('--db_user', required=True, help='Database user')
+parser.add_argument('--db_password', required=False, help='Database password')
+parser.add_argument('--db_host', required=False, default='localhost', help='Database host')
+parser.add_argument('--db_names', required=True, nargs='+', help='List of database names to backup')
+args = parser.parse_args()
 
 SCRIPT_DIR = Path(__file__).parent.absolute()
 BACKUP_ROOT = SCRIPT_DIR / 'saves'
@@ -14,10 +22,10 @@ os.makedirs(LOG_DIR, exist_ok=True)
 log_path = LOG_DIR / 'backup.log'
 logger.add(log_path, rotation="500 MB", retention="10 days", level="INFO")
 
-db_user = 'root'
-db_password = ''
-db_host = 'localhost'
-db_names = ['smartswap']
+db_user = args.db_user
+db_password = args.db_password
+db_host = args.db_host
+db_names = args.db_names
 
 date_str = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 backup_path = BACKUP_ROOT / f'backup_{date_str}'
