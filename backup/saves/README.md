@@ -16,5 +16,6 @@ This directory contains the backup files created by the MySQL backup script.
 
 > [!IMPORTANT]  
 > Ensure that you have sufficient disk space available, as backups can consume a significant amount of storage depending on the size of the databases.
+
 > [!IMPORTANT]  
 > Regularly check and manage your backups to avoid running out of space.
