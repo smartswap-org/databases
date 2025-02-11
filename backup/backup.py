@@ -34,6 +34,9 @@ os.makedirs(backup_path, exist_ok=True)
 def backup_mysql(db_name):
     try:
         dump_file = backup_path / f'{db_name}.sql'
+        
+        os.makedirs(backup_path, exist_ok=True)
+        
         logger.info(f"Attempting to backup {db_name} to {dump_file}")
         
         cmd = ['mysqldump', 
