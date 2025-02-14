@@ -1,14 +1,23 @@
 from loguru import logger
 from clients.crypt_password import encrypt_password, decrypt_password
 
-def create_client(cursor, user, discord_user_id, password):
+POWER_LEVELS = {
+    'SYS.ADMIN': 5,
+    'DEVELOPER': 4,
+    'REVIEWER': 3,
+    'VIP': 2,
+    'CLIENT': 1,
+    'VISITOR': 0
+}
+
+def create_client(cursor, user, discord_user_id, password, power=POWER_LEVELS['VISITOR']):
     """Create a new client in the clients table."""
     logger.info(f"Creating new client with user '{user}'.")
     encrypted_password = encrypt_password(password)
     cursor.execute("""
-    INSERT INTO clients (user, discord_user_id, password)
-    VALUES (%s, %s, %s);
-    """, (user, discord_user_id, encrypted_password))
+    INSERT INTO clients (user, discord_user_id, password, power)
+    VALUES (%s, %s, %s, %s);
+    """, (user, discord_user_id, encrypted_password, power))
     logger.info(f"Client created with user '{user}'.")
 
 def update_client_password(cursor, user, new_password):

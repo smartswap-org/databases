@@ -17,6 +17,7 @@ def create_db_smartswap(cursor):
         user CHAR(100),
         discord_user_id VARCHAR(125),
         password BLOB,
+        power INTEGER DEFAULT 0,
         PRIMARY KEY (user)
     );
     """)
