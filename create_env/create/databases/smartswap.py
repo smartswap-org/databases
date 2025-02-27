@@ -18,6 +18,7 @@ def create_db_smartswap(cursor):
         discord_user_id VARCHAR(125),
         password BLOB,
         power INTEGER DEFAULT 0,
+        email VARCHAR(255) DEFAULT NULL,
         PRIMARY KEY (user)
     );
     """)
@@ -39,12 +40,14 @@ def create_db_smartswap(cursor):
         buy_quantity DECIMAL(18, 8),
         buy_fees DECIMAL(18, 8),
         buy_value_usdt DECIMAL(18, 8),
+        buy_order_type VARCHAR(20) DEFAULT NULL,
         sell_order_id BIGINT,
         sell_price DECIMAL(18, 8),
         sell_date TIMESTAMP,
         sell_quantity DECIMAL(18, 8),
         sell_fees DECIMAL(18, 8),
         sell_value_usdt DECIMAL(18, 8),
+        sell_order_type VARCHAR(20) DEFAULT NULL,
         exchange VARCHAR(20),
         ratio DECIMAL(18, 8),
         position_duration INTEGER,
@@ -70,6 +73,30 @@ def create_db_smartswap(cursor):
         last_position_id INTEGER,
         funds TEXT
     )
+    ''')
+
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS connection_logs (
+        id INTEGER PRIMARY KEY AUTO_INCREMENT,
+        user CHAR(100),
+        connection_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        ip_address VARCHAR(45),
+        user_agent TEXT,
+        browser VARCHAR(50),
+        browser_version VARCHAR(30),
+        os VARCHAR(50),
+        os_version VARCHAR(30),
+        device_type VARCHAR(20),
+        screen_resolution VARCHAR(20),
+        language VARCHAR(10),
+        timezone VARCHAR(50),
+        is_mobile BOOLEAN,
+        is_tablet BOOLEAN,
+        is_bot BOOLEAN,
+        referrer TEXT,
+        FOREIGN KEY (user) REFERENCES clients(user),
+        INDEX idx_user_date (user, connection_date)
+    );
     ''')
 
     logger.info("Smartswap database setup completed.")
