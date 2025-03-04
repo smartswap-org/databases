@@ -3,3 +3,4 @@ encrypt/keys/
 backup/saves/*
 backup/logs/*
 !backup/saves/README.md
+databases/encrypt/keys/*

@@ -9,9 +9,11 @@ def create_db_smartswap(cursor):
         name VARCHAR(50),
         address VARCHAR(255),
         `keys` BLOB,
+        type VARCHAR(20), 
         PRIMARY KEY (name)
     );
     """)
+    
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS clients (
         user CHAR(100),
@@ -22,6 +24,7 @@ def create_db_smartswap(cursor):
         PRIMARY KEY (user)
     );
     """)
+    
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS wallets_access (
         client_user CHAR(100),
@@ -31,6 +34,28 @@ def create_db_smartswap(cursor):
         FOREIGN KEY (wallet_name) REFERENCES wallets(name)
     );
     """)
+
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS bots (
+        bot_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+        client_user CHAR(100),
+        wallet_name VARCHAR(50),
+        bot_name VARCHAR(50),
+        exchange_name VARCHAR(50),
+        pairs TEXT,
+        strategy VARCHAR(50),
+        reinvest_gains BOOLEAN,
+        position_percent_invest DECIMAL(5, 2),
+        invest_capital DECIMAL(18, 2),
+        adjust_with_profits_if_loss BOOLEAN,
+        timeframe VARCHAR(10),
+        simulation BOOLEAN,
+        status BOOLEAN DEFAULT FALSE,
+        FOREIGN KEY (client_user) REFERENCES clients(user),
+        FOREIGN KEY (wallet_name) REFERENCES wallets(name)
+    );
+    ''')
+
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS cex_market (
         position_id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -54,24 +79,27 @@ def create_db_smartswap(cursor):
         pair VARCHAR(20),
         buy_signals TEXT,
         sell_signals TEXT,
-        bot_name VARCHAR(20),
-        fund_slot INTEGER DEFAULT 0
+        bot_id INTEGER,
+        fund_slot INTEGER DEFAULT 0,
+        FOREIGN KEY (bot_id) REFERENCES bots(bot_id)
     )
     ''')
+
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS funds (
+        id INTEGER PRIMARY KEY AUTO_INCREMENT,
+        bot_id INTEGER,
+        last_position_id INTEGER,
+        funds TEXT,
+        FOREIGN KEY (bot_id) REFERENCES bots(bot_id)
+    )
+    ''')
+
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS app (
         position_id INTEGER PRIMARY KEY,
         buy_log BOOLEAN DEFAULT FALSE,
         sell_log BOOLEAN DEFAULT FALSE
-    )
-    ''')
-    
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS funds (
-        id INTEGER PRIMARY KEY AUTO_INCREMENT,
-        bot_name TEXT,
-        last_position_id INTEGER,
-        funds TEXT
     )
     ''')
 
