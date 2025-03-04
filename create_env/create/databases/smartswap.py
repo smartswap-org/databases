@@ -9,6 +9,7 @@ def create_db_smartswap(cursor):
         name VARCHAR(50),
         address VARCHAR(255),
         `keys` BLOB,
+        type VARCHAR(20), 
         PRIMARY KEY (name)
     );
     """)
@@ -54,8 +55,9 @@ def create_db_smartswap(cursor):
         pair VARCHAR(20),
         buy_signals TEXT,
         sell_signals TEXT,
-        bot_name VARCHAR(20),
-        fund_slot INTEGER DEFAULT 0
+        bot_id INTEGER,
+        fund_slot INTEGER DEFAULT 0,
+        FOREIGN KEY (bot_id) REFERENCES bots(bot_id)
     )
     ''')
     cursor.execute('''
@@ -69,9 +71,10 @@ def create_db_smartswap(cursor):
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS funds (
         id INTEGER PRIMARY KEY AUTO_INCREMENT,
-        bot_name TEXT,
+        bot_id INTEGER,
         last_position_id INTEGER,
-        funds TEXT
+        funds TEXT,
+        FOREIGN KEY (bot_id) REFERENCES bots(bot_id)
     )
     ''')
 
@@ -96,6 +99,27 @@ def create_db_smartswap(cursor):
         referrer TEXT,
         FOREIGN KEY (user) REFERENCES clients(user),
         INDEX idx_user_date (user, connection_date)
+    );
+    ''')
+
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS bots (
+        bot_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+        client_user CHAR(100),
+        wallet_name VARCHAR(50),
+        bot_name VARCHAR(50),
+        exchange_name VARCHAR(50),
+        pairs TEXT,
+        strategy VARCHAR(50),
+        reinvest_gains BOOLEAN,
+        position_percent_invest DECIMAL(5, 2),
+        invest_capital DECIMAL(18, 2),
+        adjust_with_profits_if_loss BOOLEAN,
+        timeframe VARCHAR(10),
+        simulation BOOLEAN,
+        status BOOLEAN DEFAULT FALSE,
+        FOREIGN KEY (client_user) REFERENCES clients(user),
+        FOREIGN KEY (wallet_name) REFERENCES wallets(name)
     );
     ''')
 
