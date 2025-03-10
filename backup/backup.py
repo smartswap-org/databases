@@ -3,7 +3,7 @@ import datetime
 import subprocess
 import argparse
 from pathlib import Path
-from loguru import logger
+from logger import log, Logger, LogLevel
 
 parser = argparse.ArgumentParser(description='Backup MySQL databases.')
 parser.add_argument('--db_user', required=True, help='Database user')
@@ -20,7 +20,11 @@ os.makedirs(BACKUP_ROOT, exist_ok=True)
 os.makedirs(LOG_DIR, exist_ok=True)
 
 log_path = LOG_DIR / 'backup.log'
-logger.add(log_path, rotation="500 MB", retention="10 days", level="INFO")
+log = Logger(
+    min_level=LogLevel.INFO,
+    log_to_file=True,
+    log_dir=str(LOG_DIR)
+)
 
 db_user = args.db_user
 db_password = args.db_password
@@ -37,7 +41,7 @@ def backup_mysql(db_name):
         
         os.makedirs(backup_path, exist_ok=True)
         
-        logger.info(f"Attempting to backup {db_name} to {dump_file}")
+        log.info(f"Attempting to backup {db_name} to {dump_file}")
         
         cmd = ['mysqldump', 
                '-u', db_user,
@@ -58,7 +62,7 @@ def backup_mysql(db_name):
         
         if db_password:
             cmd.extend(['-p' + db_password])
-            logger.debug("Using password authentication")
+            log.debug("Using password authentication")
         
         with open(dump_file, 'w') as f:
             process = subprocess.run(cmd, 
@@ -67,22 +71,22 @@ def backup_mysql(db_name):
                                   text=True)
             
         if process.returncode != 0:
-            logger.error(f"Error while backing up {db_name}:")
-            logger.error(process.stderr)
+            log.error(f"Error while backing up {db_name}:")
+            log.error(process.stderr)
         else:
             file_size = os.path.getsize(dump_file)
-            logger.info(f"Backup file size: {file_size / 1024:.2f} KB")
+            log.info(f"Backup file size: {file_size / 1024:.2f} KB")
             
             with open(dump_file, 'r') as f:
                 if 'INSERT INTO' in f.read():
-                    logger.success(f"Successfully backed up {db_name} (structure and data)!")
+                    log.info(f"Successfully backed up {db_name} (structure and data)!")
                 else:
-                    logger.warning(f"Backup of {db_name} might contain only structure, no data found!")
+                    log.warning(f"Backup of {db_name} might contain only structure, no data found!")
             
     except Exception as e:
-        logger.exception(f"Error while backing up {db_name}: {str(e)}")
+        log.error(f"Error while backing up {db_name}: {str(e)}")
 
-logger.info(f"Starting backup process in directory: {backup_path}")
+log.info(f"Starting backup process in directory: {backup_path}")
 for db in db_names:
     backup_mysql(db)
-logger.info("Backup process completed")
+log.info("Backup process completed")

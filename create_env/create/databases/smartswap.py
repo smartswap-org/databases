@@ -1,7 +1,7 @@
-from loguru import logger
+from logger import log
 
 def create_db_smartswap(cursor):
-    logger.info("Setting up the smartswap database.")
+    log.info("Setting up the smartswap database.")
     cursor.execute("USE smartswap;")
     
     cursor.execute("""
@@ -81,6 +81,7 @@ def create_db_smartswap(cursor):
         sell_signals TEXT,
         bot_id INTEGER,
         fund_slot INTEGER DEFAULT 0,
+        order_status VARCHAR(20),
         FOREIGN KEY (bot_id) REFERENCES bots(bot_id)
     )
     ''')
@@ -127,4 +128,4 @@ def create_db_smartswap(cursor):
     );
     ''')
 
-    logger.info("Smartswap database setup completed.")
+    log.info("Smartswap database setup completed.")
