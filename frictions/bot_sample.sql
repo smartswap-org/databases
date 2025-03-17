@@ -35,16 +35,10 @@ INSERT INTO bots (
     'QTS_daily_MAXER',
     TRUE,
     50.00,
-    1000.00,
+    10.00,
     TRUE,
     '1d',
     TRUE,
     TRUE
 );
 
--- Initialize funds for each bot
-SET @btc_bot_id = (SELECT bot_id FROM bots WHERE bot_name = 'btc_scalper');
-
-INSERT INTO funds (bot_id, last_position_id, funds)
-VALUES 
-(@btc_bot_id, 0, '{"USDT": 1000.00, "BTC": 0.00}'); 
