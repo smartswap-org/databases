@@ -19,12 +19,12 @@ INSERT INTO bots (
 VALUES 
 (
     'trader1', 'binance_main', 'BTC_SCALPER', 'Binance',
-    '["BTCUSDT"]', 'RSI_MACD', TRUE, 50.00, 1000.00,
+    '["BTCUSDC"]', 'RSI_MACD', TRUE, 50.00, 1000.00,
     TRUE, '5m', FALSE
 ),
 (
     'trader1', 'binance_main', 'ETH_SWING', 'Binance',
-    '["ETHUSDT"]', 'EMA_VOL', TRUE, 75.00, 2000.00,
+    '["ETHUSDC"]', 'EMA_VOL', TRUE, 75.00, 2000.00,
     TRUE, '1h', FALSE
 );
 
@@ -33,16 +33,16 @@ SET @eth_bot_id = (SELECT bot_id FROM bots WHERE bot_name = 'ETH_SWING');
 
 INSERT INTO funds (bot_id, last_position_id, funds)
 VALUES 
-(@btc_bot_id, 0, '{"USDT": 1000.00, "BTC": 0.00}'),
-(@eth_bot_id, 0, '{"USDT": 2000.00, "ETH": 0.00}');
+(@btc_bot_id, 0, '{"USDC": 1000.00, "BTC": 0.00}'),
+(@eth_bot_id, 0, '{"USDC": 2000.00, "ETH": 0.00}');
 
 INSERT INTO cex_market (
     buy_order_id, buy_price, buy_date, buy_quantity, buy_fees,
-    buy_value_usdt, buy_order_type, exchange, pair, buy_signals,
+    buy_value_usdc, buy_order_type, exchange, pair, buy_signals,
     bot_id, fund_slot
 ) VALUES (
     123456789, 45000.00, NOW() - INTERVAL 2 HOUR, 0.02, 0.45,
-    900.00, 'MARKET', 'Binance', 'BTCUSDT', 
+    900.00, 'MARKET', 'Binance', 'BTCUSDC', 
     '{"RSI_14": 30, "MACD_CROSS": true, "EMA_50_200_CROSS": true}',
     @btc_bot_id, 1
 );
@@ -54,16 +54,16 @@ VALUES (@btc_position_id, TRUE, FALSE);
 
 UPDATE funds 
 SET last_position_id = @btc_position_id,
-    funds = '{"USDT": 100.00, "BTC": 0.02}'
+    funds = '{"USDC": 100.00, "BTC": 0.02}'
 WHERE bot_id = @btc_bot_id;
 
 INSERT INTO cex_market (
     buy_order_id, buy_price, buy_date, buy_quantity, buy_fees,
-    buy_value_usdt, buy_order_type, exchange, pair, buy_signals,
+    buy_value_usdc, buy_order_type, exchange, pair, buy_signals,
     bot_id, fund_slot
 ) VALUES (
     987654321, 2500.00, NOW() - INTERVAL 1 DAY, 0.8, 0.20,
-    2000.00, 'LIMIT', 'Binance', 'ETHUSDT', 
+    2000.00, 'LIMIT', 'Binance', 'ETHUSDC', 
     '{"EMA_CROSS": true, "VOL_SPIKE": true, "SUPPORT_LEVEL": 2450}',
     @eth_bot_id, 1
 );
@@ -75,7 +75,7 @@ VALUES (@eth_position_id, TRUE, FALSE);
 
 UPDATE funds 
 SET last_position_id = @eth_position_id,
-    funds = '{"USDT": 0.00, "ETH": 0.8}'
+    funds = '{"USDC": 0.00, "ETH": 0.8}'
 WHERE bot_id = @eth_bot_id;
 
 UPDATE cex_market
@@ -85,7 +85,7 @@ SET
     sell_date = NOW(),
     sell_quantity = 0.02,
     sell_fees = 0.46,
-    sell_value_usdt = 920.00,
+    sell_value_usdc = 920.00,
     sell_order_type = 'MARKET',
     ratio = (920.00 - 900.00) / 900.00,
     position_duration = TIMESTAMPDIFF(SECOND, buy_date, sell_date),
@@ -93,7 +93,7 @@ SET
 WHERE position_id = @btc_position_id;
 
 UPDATE funds 
-SET funds = '{"USDT": 920.00, "BTC": 0.00}'
+SET funds = '{"USDC": 920.00, "BTC": 0.00}'
 WHERE bot_id = @btc_bot_id;
 
 UPDATE app

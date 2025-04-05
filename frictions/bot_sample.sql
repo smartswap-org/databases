@@ -31,7 +31,7 @@ INSERT INTO bots (
     'binance_main',
     'btc_scalper',
     'Binance',
-    '["BTCUSDT"]',
+    '["BTCUSDC"]',
     'QTS_daily_MAXER',
     TRUE,
     50.00,
